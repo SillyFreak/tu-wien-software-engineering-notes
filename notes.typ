@@ -1,10 +1,9 @@
 #import "template/template.typ": notes
 
-#import "typst-cd/typst-cd.typ": node, arr, commutative_diagram
-
-#import "oc/oc.typ": instr, skip, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
+#import "oc/oc.typ": instr, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
 
 #import "oc/lattices.typ": *
+#import "oc/flow-graphs.typ": *
 
 #show: notes.with(
   title: "Optimizing Compiler Notes",
@@ -566,68 +565,50 @@ Where $Transp(n)$ means that $t$'s operands are not redefined at $n$ and $Transp
 What follows is a node-labelled flow graph where the up- and down safety of the expression $a+b$ is highlighted in blue and green, respectively. The highlighted nodes are thus the ones where computations of the form $h := a+b$ may be inserted.
 
 #align(center)[
-  #let stmt = rect.with(
-    width: 5em,
-    height: 1.7em,
-    stroke: 0.5pt,
-  )
-
   #let nodes = (
     // put something in column 1 so that spacing is correct
-    "dummy": ((0, 1), stmt(stroke: none)[]),
-    "1": ((0, 4), stmt[]),
-    "2": ((1, 3), stmt[$a := c$]),
-    "3": ((2, 3), stmt(fill: green)[$x := a+b$]),
-    "4": ((2, 5), stmt[]),
-    "5": ((3, 4), stmt[]),
-    "6": ((4, 3), stmt(fill: green)[]),
-    "7": ((4, 5), stmt(fill: green)[]),
-    "8": ((5, 2), stmt(fill: green)[]),
-    "9": ((5, 4), stmt(fill: green)[]),
-    "10": ((6, 0), stmt(fill: green)[$y := a+b$]),
-    "11": ((6, 2), stmt(fill: green)[]),
-    "12": ((6, 4), stmt(fill: green)[]),
-    "13": ((6, 6), stmt(fill: green)[]),
-    "14": ((7, 2), stmt(fill: green)[$x := a+b$]),
-    "15": ((7, 4), stmt(fill: green)[$y := a+b$]),
+    "dummy": ((0, 1), stmt-node(stroke: none)[]),
+    "1": ((0, 4), stmt-node()),
+    "2": ((1, 3), stmt-node($assign(a, c)$)),
+    "3": ((2, 3), stmt-node($assign(x, a+b)$, fill: green)),
+    "4": ((2, 5), stmt-node()),
+    "5": ((3, 4), stmt-node()),
+    "6": ((4, 3), stmt-node(fill: green)),
+    "7": ((4, 5), stmt-node(fill: green)),
+    "8": ((5, 2), stmt-node(fill: green)),
+    "9": ((5, 4), stmt-node(fill: green)),
+    "10": ((6, 0), stmt-node($assign(y, a+b)$, fill: green)),
+    "11": ((6, 2), stmt-node(fill: green)),
+    "12": ((6, 4), stmt-node(fill: green)),
+    "13": ((6, 6), stmt-node(fill: green)),
+    "14": ((7, 2), stmt-node($assign(x, a+b)$, fill: green)),
+    "15": ((7, 4), stmt-node($assign(x, a+b)$, fill: green)),
     "16": ((8, 3),
       move(dx: 4pt, dy: 4pt,
-        stmt(fill: blue, inset: 0pt,
+        stmt-node(fill: blue, inset: 0pt,
           move(dx: -4pt, dy: -4pt,
-            stmt(fill: green)[$z := a+b$]
+            stmt-node(fill: green)[$z := a+b$]
       )))
     ),
-    "17": ((8, 5), stmt(fill: green)[$x := a+b$]),
-    "18": ((9, 5), stmt[]),
+    "17": ((8, 5), stmt-node($x := a+b$, fill: green)),
+    "18": ((9, 5), stmt-node()),
   )
 
-  #let arrow(a, b, ..args) = arr(
-    nodes.at(a).at(0),
-    nodes.at(b).at(0),
-    ..args,
-  )
+  #let edge = edge.with(nodes: nodes)
+  #let edges = edges.with(nodes: nodes)
 
-  #let arrows(body: [], ..names) = {
-    names = names.pos()
-    range(names.len() - 1).map((i) => {
-      arrow(names.at(i), names.at(i+1), body)
-    })
-  }
-
-  #commutative_diagram(
-    node_padding: (-10pt, 20pt),
-    arr_clearance: 0.2em,
-    ..nodes.values().map(((pos, body)) => node(pos, body)),
-    ..arrows("1", "2", "3", "5", "6", "8", "11", "14", "16", "18"),
-    ..arrows("1", "4", "5", "7"),
-    ..arrows("6", "9", "12", "15", "16"),
-    ..arrows("17", "18"),
-    arrow("11", "10", curve: 40deg)[],
-    arrow("10", "11", curve: 40deg)[],
-    arrow("12", "13", curve: -40deg)[],
-    arrow("13", "12", curve: -40deg)[],
-    arrow("12", "17", curve: 20deg)[],
-    arrow("7", "18", curve: 60deg)[],
+  #node-labelled-graph(
+    nodes: nodes,
+    ..edges("1", "2", "3", "5", "6", "8", "11", "14", "16", "18"),
+    ..edges("1", "4", "5", "7"),
+    ..edges("6", "9", "12", "15", "16"),
+    ..edges("17", "18"),
+    edge("11", "10", curve: 40deg)[],
+    edge("10", "11", curve: 40deg)[],
+    edge("12", "13", curve: -40deg)[],
+    edge("13", "12", curve: -40deg)[],
+    edge("12", "17", curve: 20deg)[],
+    edge("7", "18", curve: 60deg)[],
   )
 ]
 

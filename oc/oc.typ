@@ -1,6 +1,5 @@
 // flow graphs
 #let instr = $dotless.i$
-#let skip = $upright("skip")$
 #let succ = $italic("succ")$
 #let pred = $italic("pred")$
 
