@@ -2,7 +2,9 @@
 
 #import "typst-cd/typst-cd.typ": node, arr, commutative_diagram
 
-#import "oc/oc.typ": Carrier, Lattice, FL, rel, meet, join, instr, skip, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
+#import "oc/oc.typ": instr, skip, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
+
+#import "oc/lattices.typ": *
 
 #show: notes.with(
   title: "Optimizing Compiler Notes",
@@ -61,27 +63,13 @@ $
     figure(
       caption: [Hasse diagram of $Lattice(BB)$],
       numbering: none,
-    )[
-      #commutative_diagram(
-        node_padding: (20pt, 20pt),
-        arr_clearance: 0.5em,
-        node((0, 0), [$t$]),
-        node((1, 0), [$f$]),
-        arr((1, 0), (0, 0), []),
-      )
-    ],
+      hasse-boolean
+    ),
     figure(
       caption: [Hasse diagram of $Lattice(BB_or)$],
       numbering: none,
-    )[
-      #commutative_diagram(
-        node_padding: (20pt, 20pt),
-        arr_clearance: 0.5em,
-        node((0, 0), [$f$]),
-        node((1, 0), [$t$]),
-        arr((1, 0), (0, 0), []),
-      )
-    ],
+      hasse-boolean-inv
+    ),
   )
 ]
 
@@ -242,43 +230,13 @@ To reason about values that variables/terms can take, we first need a data domai
     figure(
       caption: [Hasse diagram of $FL_BB$],
       numbering: none,
-    )[
-      #commutative_diagram(
-        node_padding: (28pt, 28pt),
-        arr_clearance: 1em,
-        node((0, 1), [$top$]),
-        node((1, 0), [$f$]),
-        node((1, 2), [$t$]),
-        node((2, 1), [$bot$]),
-        arr((2, 1), (1, 0), []),
-        arr((2, 1), (1, 2), []),
-        arr((1, 0), (0, 1), []),
-        arr((1, 2), (0, 1), []),
-      )
-    ],
+      hasse-flat-boolean
+    ),
     figure(
       caption: [Hasse diagram of $FL_ZZ$],
       numbering: none,
-    )[
-      #let extreme = 2
-      #let count = extreme*2 + 1
-      #let middle = extreme + 1
-      #let right = count + 1
-
-      #commutative_diagram(
-        node_padding: (20pt, 28pt),
-        // arr_clearance: 0.5em,
-        node((0, middle), [$top$]),
-        node((1, 0), [$...$]),
-        ..range(0, count).map((i) => (
-          node((1, i+1), [$#(i - extreme)$]),
-          arr((1, i+1), (0, middle), []),
-          arr((2, middle), (1, i+1), []),
-        )).flatten(),
-        node((1, right), [$...$]),
-        node((2, middle), [$bot$]),
-      )
-    ],
+      hasse-flat-integers(2)
+    ),
   )
 ]
 

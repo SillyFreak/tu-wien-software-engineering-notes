@@ -1,16 +1,3 @@
-// lattices
-#let Carrier = $cal(C)$
-#let Lattice(carrier) = $accent(carrier, hat)$
-// TODO manual kerning for calligraphy letters
-#let FL = $cal("F")#h(-0.22em)cal("L")$
-
-#let rel = $subset.eq.sq$
-
-#let meet = $sect.sq$
-#let Meet = $sect.sq.big$
-#let join = $union.sq$
-#let Join = $union.sq.big$
-
 // flow graphs
 #let instr = $dotless.i$
 #let skip = $upright("skip")$
