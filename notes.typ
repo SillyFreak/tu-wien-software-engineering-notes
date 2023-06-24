@@ -1,8 +1,8 @@
-#import "template.typ": notes
+#import "template/template.typ": notes
 
 #import "typst-cd/typst-cd.typ": node, arr, commutative_diagram
 
-#import "oc.typ": Carrier, Lattice, FL, rel, meet, join, instr, skip, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
+#import "oc/oc.typ": Carrier, Lattice, FL, rel, meet, join, instr, skip, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
 
 #show: notes.with(
   title: "Optimizing Compiler Notes",
