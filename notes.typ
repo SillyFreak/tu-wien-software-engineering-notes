@@ -1,6 +1,6 @@
 #import "template/template.typ": notes
 
-#import "oc/oc.typ": instr, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest
+#import "oc/oc.typ": instr, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, ALCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest, Delayed, Latest, Isolated
 
 #import "oc/lattices.typ": *
 #import "oc/flow-graphs.typ": *
@@ -573,11 +573,11 @@ What follows is a node-labelled flow graph where the up- and down safety of the 
   #let av-node = node.with(fill: green)
   #let vb-node = node.with(fill: blue)
 
-  #let vb-av-node(..args) = {
+  #let vb-av-node(..opts) = {
     move(dx: 4pt, dy: 4pt,
       vb-node(inset: 0pt,
         move(dx: -4pt, dy: -4pt,
-          av-node(..args)
+          av-node(..opts)
     )))
   }
 
@@ -649,4 +649,52 @@ BCM is computationally optimal, but maximizes register pressure. Code size can g
 
 == Lazy code motion (LCM)
 
-LCM is both computationally and lifetime optimal.
+LCM is both computationally and lifetime optimal. It moves computations to the latest possible point that still results in the minimum number of computations.
+
+We first need the notion of delayability: a computation (of $t$) can be delayed to node $n$ when all paths to $n$ inlcude the earliest node for the computation, and these paths do not include a computation between the earliest node (inclusive) and $n$ (exclusive).
+
+$
+Delayed(n) =
+  &forall p in Paths[s, n]. exists i <= lambda_p. \
+  &quad Earliest(p_i) and not Comp^exists (p lr([i, lambda_p\[))
+$
+
+Similarly to $Earliest$, we now define $Latest$:
+
+$
+Latest(n) = Delayed(n) and (Comp(n) or or.big_(m in succ(n)) not Delayed(m))
+$
+
+This leads is to a precursor of LCM: the ALCM transformation is computationally and _almost_ lifetime optimal.
+
+$
+Insert_ALCM (n) = Latest(n) \
+Repl_ALCM (n) = Comp(n)
+$
+
+As a simple example for how this is not lifetime optimal yet, take the simple example $assign(x, a+b)$. While there is no improvement to achieve, ALCM would still hoist the computation to directly before the original assignment: $assign(h, a+b); assign(x, h)$. Note that the "uselessness" of the hoisting depends on the CM transformation being applied.
+
+We thus need to further consider a notion of _isolatedness_ regarding a specific CM transformation: a node $n$ is isolated if all paths from there to the end node that contain a replacement of $t$ at some later node $p_i$ satisfy that a computation was inserted at some node between $n$ (exclusive) and $p_i$ (inclusive).
+
+We are specifically interested in isolatedness relative to the BCM transformation:
+
+$
+Isolated_CM (n) =
+  &forall p in Paths[n, e]. forall 1 < i <= lambda_p. \
+  &quad Repl_CM (p_i) => Insert_CM^exists (p lr(]1, i])) \
+
+Isolated_BCM (n) =
+  &forall p in Paths[n, e]. forall 1 < i <= lambda_p. \
+  &quad Comp(p_i) => Earliest^exists (p lr(]1, i]))
+$
+
+A node $n$ is isolated (w.r.t. BCM) if either no path from there computes $t$ (at a later node than $n$), or if $t$ is computed on some paths, all computations on those paths are preceded by an earliest node that comes after $n$ and before or at the computation.
+
+This allows us to specify the LCM transformation:
+
+$
+Insert_LCM (n) = Latest(n) and not Isolated_BCM (n) \
+Repl_LCM (n) = Comp(n) and not (Latest(n) and Isolated_BCM (n))
+$
+
+// TODO are nodes 9, 12, 13 of the example graph isolated?
