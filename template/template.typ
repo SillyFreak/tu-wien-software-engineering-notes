@@ -1,63 +1,63 @@
 #let notes(
   title: none,
-	subtitle-lines: (),
-	authors: (),
+  subtitle-lines: (),
+  authors: (),
   doc,
 ) = {
   set document(
     title: title
   )
 
-	// title page
-	{
-		set page(
-			paper: "a4",
-			margin: (x: 2.8cm, y: 8cm),
-		)
+  // title page
+  {
+    set page(
+      paper: "a4",
+      margin: (x: 2.8cm, y: 8cm),
+    )
 
-		set align(center)
-		set heading(outlined: false)
+    set align(center)
+    set heading(outlined: false)
 
-		[
-			#set text(size: 16pt)
+    [
+      #set text(size: 16pt)
 
-			= #title
+      = #title
 
-			#v(1cm)
+      #v(1cm)
 
-			#for subtitle in subtitle-lines [
-				#subtitle
-			]
+      #for subtitle in subtitle-lines [
+        #subtitle
+      ]
 
-			#v(3cm)
+      #v(3cm)
 
-			#set text(size: 12pt)
+      #set text(size: 12pt)
 
-			#for author in authors [
-				#author
-			]
-		]
-	}
-	pagebreak()
+      #for author in authors [
+        #author
+      ]
+    ]
+  }
+  pagebreak()
 
-	set page(
-		paper: "a4",
-		margin: (x: 2.8cm, y: 2cm),
-		footer: [
-			#set align(center)
-			#counter(page).display(
-				"1/1",
-				both: true,
-			)
-		]
-	)
+  set page(
+    paper: "a4",
+    margin: (x: 2.8cm, y: 2cm),
+    footer: [
+      #set align(center)
+      #counter(page).display(
+        "1/1",
+        both: true,
+      )
+    ]
+  )
 
-	set heading(numbering: "1.")
-	set table(stroke: 0.5pt)
+  set heading(numbering: "1.")
+  set table(stroke: 0.5pt)
 
-	outline()
+  outline()
 
-	pagebreak()
+  pagebreak()
 
   doc
 }
