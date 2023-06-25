@@ -574,7 +574,7 @@ What follows is a node-labelled flow graph where the up- and down safety of the 
     "4": ((2, 5), stmt-node()),
     "5": ((3, 4), stmt-node()),
     "6": ((4, 3), stmt-node(fill: green)),
-    "7": ((4, 5), stmt-node(fill: green)),
+    "7": ((4, 5), stmt-node()),
     "8": ((5, 2), stmt-node(fill: green)),
     "9": ((5, 4), stmt-node(fill: green)),
     "10": ((6, 0), stmt-node($assign(y, a+b)$, fill: green)),
