@@ -12,6 +12,33 @@
   ),
 )
 
+#[
+  #set heading(numbering: none)
+
+  = Revision history
+
+  - no "published" version yet.
+
+  = About this document
+
+  This document is based on Uwe Egly's Optimizing Compilers lecture at Vienna University of Technology; particularly from taking it in the 2022/23 winter term and refreshing my knowledge on it mid-2023. Corrections and additions are welcome as pull requests at
+
+  https://github.com/SillyFreak/optimizing-compilers-notes
+
+  This document leaves out several details and was written primarily for me, but I hope it is useful for other people as well. Among the things one reading it should keep in mind:
+
+  - This is not a replacement to Prof. Egly's slides or the lecture in any way. Much of the information may require context and/or preliminaries found in the slides or in the lecture.
+  - I liberally skip proofs. They make up a large part of the professor's slides, and I don't think it would be very useful to repeat them here.
+  - In general, I skip formal definitions where they were basic enough for me; for example, I gloss over structure and semantics of programs, which are important for most program analyses. Your mileage may vary.
+  - I skip chapters 1 (Motivation) and 2 (Classical Gen/Kill Data Flow Analyses) in favor of starting with the DFA framework, which subsumes that material anyway.
+  - The document is in general still incomplete.
+  - I am fallible and make errors or overlook some points' importance.
+
+  If you have questions, feel free to reach out on Github. I may at least occasionally be motivated enough to answer questions, extend the document with explanations based on your question, or help you with adding it yourself.
+
+  #pagebreak()
+]
+
 = The DFA framework
 
 In the general data flow analysis framework, a DFA problem on an edge-labelled flow graph $G$ is formulated through a lattice with corresponding local semantics and some additional meta-information. The lattice is formed in some _carrier set_, $Carrier$:
