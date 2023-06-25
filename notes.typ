@@ -397,7 +397,7 @@ The difference between constant propagation specifications lies in how the exten
 
 == Simple constants
 
-The simple constant analysis evaluates terms containing constants and constant variables to non-$bot$ values:
+The simple constant analysis evaluates terms containing only constants and constant variables to non-$bot$ values:
 
 $
 Eval'(t)(sigma) &= cases(
@@ -427,7 +427,7 @@ $
 
 == Linear constants
 
-The linear constants analysis limits itself to linear arithmetic terms: it considers terms of the form $c*v plus.circle d$ (with $c, d in Consts$, $v in Vars$, $plus.circle in {+, -}$) specially (as well as other semantically equivalent forms such as $d eq.est 0*v + d$, $c*v eq.est c*v + 0$, etc.):
+The linear constants analysis limits itself to linear arithmetic terms: it considers terms of the form $c*v plus.circle d$ (with $c, d in Consts$, $v in Vars$, $plus.circle in {+, -}$) specifically (as well as other semantically equivalent forms such as $d eq.est 0*v + d$, $c*v eq.est c*v + 0$, etc.):
 
 $
 Eval'(t)(sigma) &= cases(
@@ -444,7 +444,7 @@ where $Eval_"SC"$ is the extended evaluation function for simple constants.
 
 == Q constants (Kam & Ullman)
 
-Q-constants do not use a different evaluation function; instead, the MaxFP algorithm is fixed slightly. Consider these code examples and a simple constant analysis on them:
+The Q constants analysis does not use a different evaluation function; instead, the MaxFP algorithm is modified slightly. Consider these code examples and a simple constant analysis on them:
 
 #align(center)[
   #grid(
@@ -479,7 +479,7 @@ Q-constants do not use a different evaluation function; instead, the MaxFP algor
   )
 ]
 
-In the first example, both `a` and `b` are constants after the conditional, but in the first example they are not; `a + b`, however, is a constant not detected by the simple constant analysis. Recall:
+In the first example, both $a$ and $b$ are constants after the conditional, but in the first example they are not; $a + b$, however, is a constant not detected by the simple constant analysis. Recall:
 
 - Before exiting the conditional, we have $sigma_1$ with $a=2, b=3$ and $sigma_2$ with $a=3, b=2$.
 
@@ -499,13 +499,13 @@ Taking the meet "lazily" after the evaluation results in more evaluations overal
 
 == Finite constants
 
-In contrast to the CP analyses so far, finite constants are based on _terms_: the problem illustrated for Q constants was that while previous analyses kept track of variable values (e.g. of $a$ and $b$), the value of terms such as $a+b$ was not remembered. If we stored $a+b=5$ as part of the information at the end of both branches, the MaxFP algorithm would naturally preserve and forward that information.
+In contrast to the CP analyses so far, the finite constants analysis is based on _terms_: the problem illustrated for Q constants was that while previous analyses kept track of variable values (e.g. of $a$ and $b$), the value of terms such as $a+b$ was not remembered. If we stored $a+b=5$ as part of the information at the end of both branches, the MaxFP algorithm would naturally preserve and forward that information.
 
 There are infinitely many possible terms, but fortunately, only a finite set of them needs to be considered (why?), leading to the name _finite constants_.
 
 == Conditional constants
 
-In previous example, the predicate variable $p$ was left as an unknown; if however a condition is itself constant, this means we don't need to join control flows and can avoid the lossy meet operation at the end altogether.
+In previous examples, the predicate variable $p$ was left as an unknown; if however a condition is itself constant, this means we don't need to join control flows and can avoid the lossy meet operation at the end altogether.
 
 To do so, we need to extend our domain to include boolean values: $DD_BB = DD union BB$, and extend our definitions to allow for comparisons and logical operators, so that boolean terms can be formed. On top of this, we use the flat lattice $FL_DD_BB$ and state lattice $Lattice(Sigma')$
 
@@ -515,7 +515,7 @@ TODO
 
 #pagebreak(weak: true)
 
-= Partial redundancy elimination
+= Partial redundancy elimination (PRE)
 
 PRE is an optimization that avoids recomputing the same value multiple times. The tool for this is moving computations to one or more earlier points in the flow graph (particularly outside a loop the original computation appeared in). Whenever these stored results are used, none of the variables used in the computation must have changed in the meantime ("correctness"). The three goals which can be traded are
 
@@ -523,7 +523,7 @@ PRE is an optimization that avoids recomputing the same value multiple times. Th
 - register pressure: minimize the amount of time a result needs to be held in a register
 - code size: minimize the number of instructions in the flow graph
 
-Classically, there is an additional requirement for the code motion: no program path that originally did not compute the value may be made to compute the value after code motion. This is called "safety", because the extra computation could result in a failure even though the branch containing the failing code wasn't taken.
+Classically, there is an additional requirement for the code motion: no program path that originally did not compute the value may be made to compute the value after code motion. This is called "safety", because the extra computation could result in a failure even though the branch originally containing the failing code wasn't taken.
 
 Trading these in different ways leads to a taxonomy of multiple code motion strategies, for example:
 
@@ -554,8 +554,8 @@ $
 Safe(n) = &Available(n) or VeryBusy(n) \
 
 Correct_CM (n) =
-    &forall path(#$n_1, ..., n_k$) in Paths[s, n]. exists i. \
-    &quad Insert_CM (n_i) and Transp^forall (path(#$n_i, ..., n_(k-1)$))
+  &forall path(#$n_1, ..., n_k$) in Paths[s, n]. exists i. \
+  &quad Insert_CM (n_i) and Transp^forall (path(#$n_i, ..., n_(k-1)$))
 $
 
 Where $Transp(n)$ means that $t$'s operands are not redefined at $n$ and $Transp^forall (p)$ extends that to apply to all nodes on path $p$.
