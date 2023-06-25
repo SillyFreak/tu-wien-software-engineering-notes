@@ -565,39 +565,51 @@ Where $Transp(n)$ means that $t$'s operands are not redefined at $n$ and $Transp
 What follows is a node-labelled flow graph where the up- and down safety of the expression $a+b$ is highlighted in blue and green, respectively. The highlighted nodes are thus the ones where computations of the form $h := a+b$ may be inserted.
 
 #align(center)[
+  #set text(size: 8pt)
+
+  #let node = stmt-node.with(width: 5.5em)
+
+  #let dummy-node = node.with(stroke: none)
+  #let av-node = node.with(fill: green)
+  #let vb-node = node.with(fill: blue)
+
+  #let vb-av-node(..args) = {
+    move(dx: 4pt, dy: 4pt,
+      vb-node(inset: 0pt,
+        move(dx: -4pt, dy: -4pt,
+          av-node(..args)
+    )))
+  }
+
   #let nodes = (
     // put something in column 1 so that spacing is correct
-    "dummy": ((0, 1), stmt-node(stroke: none)[]),
-    "1": ((0, 4), stmt-node()),
-    "2": ((1, 3), stmt-node($assign(a, c)$)),
-    "3": ((2, 3), stmt-node($assign(x, a+b)$, fill: green)),
-    "4": ((2, 5), stmt-node()),
-    "5": ((3, 4), stmt-node()),
-    "6": ((4, 3), stmt-node(fill: green)),
-    "7": ((4, 5), stmt-node()),
-    "8": ((5, 2), stmt-node(fill: green)),
-    "9": ((5, 4), stmt-node(fill: green)),
-    "10": ((6, 0), stmt-node($assign(y, a+b)$, fill: green)),
-    "11": ((6, 2), stmt-node(fill: green)),
-    "12": ((6, 4), stmt-node(fill: green)),
-    "13": ((6, 6), stmt-node(fill: green)),
-    "14": ((7, 2), stmt-node($assign(x, a+b)$, fill: green)),
-    "15": ((7, 4), stmt-node($assign(x, a+b)$, fill: green)),
-    "16": ((8, 3),
-      move(dx: 4pt, dy: 4pt,
-        stmt-node(fill: blue, inset: 0pt,
-          move(dx: -4pt, dy: -4pt,
-            stmt-node(fill: green)[$z := a+b$]
-      )))
-    ),
-    "17": ((8, 5), stmt-node($x := a+b$, fill: green)),
-    "18": ((9, 5), stmt-node()),
+    "dummy": ((0, 1), dummy-node()),
+
+    "1": ((0, 4), node()),
+    "2": ((1, 3), node($assign(a, c)$)),
+    "3": ((2, 3), av-node($assign(x, a+b)$)),
+    "4": ((2, 5), node()),
+    "5": ((3, 4), node()),
+    "6": ((4, 3), av-node()),
+    "7": ((4, 5), node()),
+    "8": ((5, 2), av-node()),
+    "9": ((5, 4), av-node()),
+    "10": ((6, 0), av-node($assign(y, a+b)$)),
+    "11": ((6, 2), av-node()),
+    "12": ((6, 4), av-node()),
+    "13": ((6, 6), av-node()),
+    "14": ((7, 2), av-node($assign(x, a+b)$)),
+    "15": ((7, 4), av-node($assign(x, a+b)$)),
+    "16": ((8, 3), vb-av-node($z := a+b$)),
+    "17": ((8, 5), av-node($x := a+b$)),
+    "18": ((9, 5), node()),
   )
 
   #let edge = edge.with(nodes: nodes)
   #let edges = edges.with(nodes: nodes)
 
   #node-labelled-graph(
+    node_padding: (-12pt, 20pt),
     nodes: nodes,
     ..edges("1", "2", "3", "5", "6", "8", "11", "14", "16", "18"),
     ..edges("1", "4", "5", "7"),
@@ -607,7 +619,7 @@ What follows is a node-labelled flow graph where the up- and down safety of the 
     edge("10", "11", curve: 40deg)[],
     edge("12", "13", curve: -40deg)[],
     edge("13", "12", curve: -40deg)[],
-    edge("12", "17", curve: 20deg)[],
+    edge("12", "17", curve: 26deg)[],
     edge("7", "18", curve: 60deg)[],
   )
 ]

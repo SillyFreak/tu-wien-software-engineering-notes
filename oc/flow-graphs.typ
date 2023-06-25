@@ -1,6 +1,6 @@
 #import "../typst-cd/typst-cd.typ": node, arr, commutative_diagram
 
-#let empty = $ $
+#let empty = $$
 #let skip = $upright("skip")$
 #let assign(v, t) = $#v := #t$
 
@@ -8,6 +8,7 @@
   rect(
     width: 5em,
     stroke: 0.5pt,
+    // if no args are given, make sure that we include the empty statement so that there's content setting the rect's height
     ..if args.pos().len() == 0 { (empty,) },
     ..args,
   )
@@ -53,15 +54,17 @@
 }
 
 #figure(caption: [node-labelled flow graph])[
+  #let node = stmt-node
+
   #let nodes = (
     // put something in column 3 so that spacing is correct
-    "dummy": ((0, 3), stmt-node(stroke: none)),
-    "1": ((0, 1), stmt-node()),
-    "2": ((1, 0), stmt-node($assign(a, c)$)),
-    "3": ((2, 0), stmt-node($assign(x, a+b)$)),
-    "4": ((2, 2), stmt-node()),
-    "5": ((2, 4), stmt-node($assign(y, a+b)$)),
-    "6": ((3, 1), stmt-node()),
+    "dummy": ((0, 3), node(stroke: none)),
+    "1": ((0, 1), node()),
+    "2": ((1, 0), node($assign(a, c)$)),
+    "3": ((2, 0), node($assign(x, a+b)$)),
+    "4": ((2, 2), node()),
+    "5": ((2, 4), node($assign(y, a+b)$)),
+    "6": ((3, 1), node()),
   )
 
   #let edge = edge.with(nodes: nodes)
@@ -118,13 +121,15 @@
 }
 
 #figure(caption: [edge-labelled flow graph])[
+  #let node = circ-node
+
   #let nodes = (
     // put something in column 3 so that spacing is correct
-    "1": ((0, 1), circ-node()),
-    "3": ((1, 0), circ-node()),
-    "4": ((1, 2), circ-node()),
-    "5": ((1, 4), circ-node()),
-    "6": ((2, 1), circ-node()),
+    "1": ((0, 1), node()),
+    "3": ((1, 0), node()),
+    "4": ((1, 2), node()),
+    "5": ((1, 4), node()),
+    "6": ((2, 1), node()),
   )
 
   #let edge = stmt-edge.with(nodes: nodes)
