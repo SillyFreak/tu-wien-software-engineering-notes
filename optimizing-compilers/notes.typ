@@ -23,7 +23,7 @@
 
   This document is based on Uwe Egly's Optimizing Compilers lecture at Vienna University of Technology; particularly from taking it in the 2022/23 winter term and refreshing my knowledge on it mid-2023. Corrections and additions are welcome as pull requests at
 
-  https://github.com/SillyFreak/optimizing-compilers-notes
+  https://github.com/SillyFreak/tu-wien-software-engineering-notes
 
   This document leaves out several details and was written primarily for me, but I hope it is useful for other people as well. Among the things one reading it should keep in mind:
 
@@ -429,11 +429,11 @@ The simple constant analysis evaluates terms containing only constants and const
 $
 Eval'(t)(sigma) &= cases(
   sigma(v)
-    &quad #[if $t ident v in Vars$],
+    &quad #[if $t equiv v in Vars$],
   I_0'(c)
-    &quad #[if $t ident c in Consts$],
+    &quad #[if $t equiv c in Consts$],
   I_0'("op")(Eval'(t_1)(sigma), ..., Eval'(t_k)(sigma))
-    &quad #[if $t ident ("op", t_1, ..., t_k)$]
+    &quad #[if $t equiv ("op", t_1, ..., t_k)$]
 )
 $
 
@@ -444,9 +444,9 @@ The copy constant analysis only deals with terms that are either constants thems
 $
 Eval'(t)(sigma) &= cases(
   sigma(v)
-    &quad #[if $t ident v in Vars$],
+    &quad #[if $t equiv v in Vars$],
   I_0'(c)
-    &quad #[if $t ident c in Consts$],
+    &quad #[if $t equiv c in Consts$],
   bot
     &quad #[otherwise]
 )
@@ -459,9 +459,9 @@ The linear constants analysis limits itself to linear arithmetic terms: it consi
 $
 Eval'(t)(sigma) &= cases(
   sigma(v)
-    &quad #[if $t ident v in Vars$],
+    &quad #[if $t equiv v in Vars$],
   Eval_"SC" (t)(sigma)
-    &quad #[if $t ident c*v plus.circle d$],
+    &quad #[if $t equiv c*v plus.circle d$],
   bot
     &quad #[otherwise]
 )
