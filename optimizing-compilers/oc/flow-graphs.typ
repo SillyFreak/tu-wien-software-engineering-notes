@@ -1,4 +1,4 @@
-#import "../typst-cd/typst-cd.typ": node, arr, commutative_diagram
+#import "@preview/commute:0.2.0": node, arr, commutative-diagram
 
 #let empty = $$
 #let skip = $upright("skip")$
@@ -14,16 +14,16 @@
   )
 }
 
-#let edge(a, b, nodes: none, start_space: none, end_space: none, label_pos: 1em, curve: 0deg, stroke: 0.45pt, ..options) = {
+#let edge(a, b, nodes: none, start-space: none, end-space: none, label-pos: 1em, curve: 0deg, stroke: 0.45pt, ..options) = {
   assert(nodes != none)
 
   arr(
     nodes.at(a).at(0),
     nodes.at(b).at(0),
     [],
-    start_space: start_space,
-    end_space: end_space,
-    label_pos: label_pos,
+    start-space: start-space,
+    end-space: end-space,
+    label-pos: label-pos,
     curve: curve,
     stroke: stroke,
     ..options
@@ -45,9 +45,9 @@
 #let node-labelled-graph(nodes: none, ..options) = {
   assert(nodes != none)
 
-  commutative_diagram(
-    node_padding: (-10pt, 20pt),
-    arr_clearance: 0.2em,
+  commutative-diagram(
+    node-padding: (-10pt, 20pt),
+    arr-clearance: 0.2em,
     ..nodes.values().map(((pos, body)) => node(pos, body)),
     ..options,
   )
@@ -74,8 +74,8 @@
     nodes: nodes,
     ..edges("1", "2", "3", "6"),
     ..edges("1", "4", "6"),
-    edge("4", "5", curve: -40deg)[],
-    edge("5", "4", curve: -40deg)[],
+    edge("4", "5", curve: -40deg),
+    edge("5", "4", curve: -40deg),
   )
 ]
 
@@ -112,9 +112,9 @@
 #let edge-labelled-graph(nodes: none, ..options) = {
   assert(nodes != none)
 
-  commutative_diagram(
-    node_padding: (20pt, 20pt),
-    arr_clearance: 0.2em,
+  commutative-diagram(
+    node-padding: (20pt, 20pt),
+    arr-clearance: 0.2em,
     ..nodes.values().map(((pos, body)) => node(pos, body)),
     ..options,
   )

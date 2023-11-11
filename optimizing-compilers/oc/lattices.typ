@@ -1,4 +1,4 @@
-#import "../typst-cd/typst-cd.typ": node, arr, commutative_diagram
+#import "@preview/commute:0.2.0": node, arr, commutative-diagram
 
 #let Carrier = $cal(C)$
 #let Lattice(carrier) = $accent(carrier, hat)$
@@ -20,9 +20,9 @@ Meet {c_1, ..., c_k} = c_1 meet ... meet c_k \
 Join {c_1, ..., c_k} = c_1 join ... join c_k
 $
 
-#let hasse-boolean = commutative_diagram(
-  node_padding: (28pt, 28pt),
-  // arr_clearance: 1em,
+#let hasse-boolean = commutative-diagram(
+  node-padding: (28pt, 28pt),
+  // arr-clearance: 1em,
   node((0, 0), [$t$]),
   node((1, 0), [$f$]),
   arr((1, 0), (0, 0), []),
@@ -33,9 +33,9 @@ $
   hasse-boolean
 )
 
-#let hasse-boolean-inv = commutative_diagram(
-  node_padding: (28pt, 28pt),
-  // arr_clearance: 1em,
+#let hasse-boolean-inv = commutative-diagram(
+  node-padding: (28pt, 28pt),
+  // arr-clearance: 1em,
   node((0, 0), [$f$]),
   node((1, 0), [$t$]),
   arr((1, 0), (0, 0), []),
@@ -46,9 +46,9 @@ $
   hasse-boolean-inv
 )
 
-#let hasse-flat-boolean = commutative_diagram(
-  node_padding: (28pt, 28pt),
-  arr_clearance: 1em,
+#let hasse-flat-boolean = commutative-diagram(
+  node-padding: (28pt, 28pt),
+  arr-clearance: 1em,
   node((0, 1), [$top$]),
   node((1, 0), [$f$]),
   node((1, 2), [$t$]),
@@ -70,9 +70,9 @@ $
   let middle = breadth + 1
   let right = count + 1
 
-  commutative_diagram(
-    node_padding: (20pt, 28pt),
-    // arr_clearance: 0.5em,
+  commutative-diagram(
+    node-padding: (20pt, 28pt),
+    // arr-clearance: 0.5em,
     node((0, middle), [$top$]),
     node((1, 0), [$...$]),
     ..range(0, count).map((i) => (

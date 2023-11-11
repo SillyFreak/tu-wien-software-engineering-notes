@@ -636,18 +636,18 @@ What follows is a node-labelled flow graph where the up- and down safety of the 
   #let edges = edges.with(nodes: nodes)
 
   #node-labelled-graph(
-    node_padding: (-12pt, 20pt),
+    node-padding: (-12pt, 20pt),
     nodes: nodes,
     ..edges("1", "2", "3", "5", "6", "8", "11", "14", "16", "18"),
     ..edges("1", "4", "5", "7"),
     ..edges("6", "9", "12", "15", "16"),
     ..edges("17", "18"),
-    edge("11", "10", curve: 40deg)[],
-    edge("10", "11", curve: 40deg)[],
-    edge("12", "13", curve: -40deg)[],
-    edge("13", "12", curve: -40deg)[],
-    edge("12", "17", curve: 26deg)[],
-    edge("7", "18", curve: 60deg)[],
+    edge("11", "10", curve: 40deg),
+    edge("10", "11", curve: 40deg),
+    edge("12", "13", curve: -40deg),
+    edge("13", "12", curve: -40deg),
+    edge("12", "17", curve: 26deg),
+    edge("7", "18", curve: 60deg),
   )
 ]
 
