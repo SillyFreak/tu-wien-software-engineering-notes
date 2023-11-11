@@ -1,0 +1,2 @@
+# ignore auxilliary PDFs
+template/*.pdf

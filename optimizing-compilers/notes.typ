@@ -1,4 +1,4 @@
-#import "template/template.typ": notes
+#import "../template/template.typ": notes
 
 #import "oc/oc.typ": instr, succ, pred, Spec, Func, fw, bw, Const, Id, Vars, Consts, Terms, Ops, Eval, path, Paths, CM, BCM, ALCM, LCM, SpCM, Insert, Repl, Comp, Transp, Safe, Correct, Available, VeryBusy, Earliest, Delayed, Latest, Isolated
 
