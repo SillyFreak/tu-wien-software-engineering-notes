@@ -1,4 +1,5 @@
 #import "@preview/cetz:0.1.2": canvas, draw, tree
+#import "@preview/commute:0.2.0": node, arr, commutative-diagram
 
 #import "../template/template.typ": notes
 
@@ -158,3 +159,184 @@ Or, as a set of clauses instead of a formula:
 $
 delta(phi) = hat(delta)(phi) union {ell_9} = {not ell_1 or p, ell_1 or not p, dots, not ell_9 or not ell_7 or ell_8, ell_9 or ell_7, ell_9 or not ell_8, ell_9}
 $
+
+= Implication Graphs
+
+//For a specific set of clauses, an implication
+
+== Clause states
+
+A clause can have one of four states:
+
+- _satisfied:_ at least one of its literals is assigned true
+- _unsatisfied:_ all its literals is assigned false
+- _unit:_ all but one literals is assigned false (i.e. the last needs to be assigned true to be satisfied, the decision is forced)
+- _unresolved:_ none of the above
+
+== Decisions
+
+Decisions add variable assignments to a partial variable assignment. Depending on when in the process a variable is assigned, a decision has a _decision level_. By deciding one variable per level, decision levels (for regular decisions) range from 1 at most to the number of variables - usually, it will be less, because decisions on unit clauses are forced.
+
+We write $x = v@d$ to say that variable $x$ has been assigned value $v$ at decision level $d$. As a shorthand for $x = 1@d$/$x = 0@d$, we write $x@d$/$not x@d$ (or $ell@d$: deciding a literal at depth $d$, where the literal is a negated or non-negated variable). The _dual_ $ell^d$ (or $ell^d@d$) means the opposite decision of $ell$ (or $ell@d$), e.g. the dual of $x@d$ is $not x@d$ and vice-versa.
+
+== Antecedents
+
+Under a partial variable assignment $sigma$, a clause $C$ may simplify to a unit clause $ell$, which we write $C sigma = ell$. For example, under the partial variable assignment $sigma = { x_1 |-> 1, x_4 |-> 0}$, the clause $C: not x_1 or x_4 or not x_3$ simplifies to $not x_3$.
+
+The clause that, under some $sigma$, forces a decision of $ell$ is called its _antecedent_: $"Antecedent"(ell) = C$. Here, $C$ is treated as a set of literals (i.e. ${not x_1, x_4, not x_3}$). Although it should not matter for the construction of implication graphs, when a literal is not forced under some partial assignment, we can simply take the antecedent to be an empty set.
+
+== The implication graph
+
+An implication graph (IG) is a DAG $G = (V, E)$ that satisfies:
+
+- Each vertex has a label of the form $ell@d$, where $ell$ is some literal and $d$ is a decision level.
+- For each vertex $v_j$, take the set of dual literals of its antecedent: ${v_i | v_i^d in "Antecedent"(v_j)}$. For all $v_i$ that are vertices of the graph (by the above point, it is not necessary that all are), there is an edge from $v_i$ to $v_j$, or: $E = {(v_i, v_j) | v_i, v_j in V, v_i^d in "Antecedent"(v_j)}$. All these edges are labelled with $"Antecedent"(v_j)$.
+
+Additionally, conflict graphs are also implication graphs, and they contain additionally
+
+- one vertex labelled $kappa$ called the conflict node, and
+- edges ${(v, kappa) | v^d in c}$ for some clause $c$. Note that there's no "filter" $v in V$ in this definition, so all of $c$'s literals' duals need to actually be vertices, which makes the clause actually unsatisfied and $kappa$'s predecessor nodes conflicting.
+
+== Example 1
+
+Let's take the single clause $c: not x_1 or x_4 or not x_3$ again and start from zero.
+
+- Arbitrarily we begin by assigning $x_1 |-> 1$, or with the decision $x_1@1$.
+- After this decision, we have no unit clause and continue with $x_4 |-> 0$ or $not x_4@2$. At this point, $c$ can be simplified to $not x_3$, meaning we have $"Antecedent"(not x_3) = {not x_1, x_4, not x_3}$.
+- We thus add a vertex $not x_3@2$ (at the same depth as the decision that made the clause unit) and two edges $(x_1@1, not x_3@2)$, $(not x_4@2, not x_3@2)$ to the graph.
+- All variables have been assigned without conflict; we're done.
+
+#grid(
+  columns: (1fr,)*3,
+  rows: auto,
+  gutter: 3pt,
+  [
+    #set align(center)
+    #commutative-diagram(
+      node-padding: (32pt, 16pt),
+      node((0, 0), [$x_1@1$]),
+      // node((2, 0), [$not x_4@2$]),
+      // node((1, 1), [$not x_3@2$]),
+      // arr((0, 0), (1, 1), [$C$]),
+      // arr((2, 0), (1, 1), [$C$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+      node-padding: (32pt, 16pt),
+      node((0, 0), [$x_1@1$]),
+      node((2, 0), [$not x_4@2$]),
+      // node((1, 1), [$not x_3@2$]),
+      // arr((0, 0), (1, 1), [$C$]),
+      // arr((2, 0), (1, 1), [$C$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+      node-padding: (32pt, 16pt),
+      node((0, 0), [$x_1@1$]),
+      node((2, 0), [$not x_4@2$]),
+      node((1, 1), [$not x_3@2$]),
+      arr((0, 0), (1, 1), [$c$]),
+      arr((2, 0), (1, 1), [$c$]),
+    )
+  ],
+)
+
+== Example 2
+
+Let's assume that we had not made decisions one after the other (and thus resolved $c$ that became a unit clause) but came up instantly with the assignment ${x_1@1, not x_4@1, x_3@1}$. This would make $c$ unsatisfied and lead to a conflict graph:
+
+#[
+  #set align(center)
+  #commutative-diagram(
+    node-padding: (48pt, 24pt),
+    node((0, 0), [$x_1@1$]),
+    node((1, 0), [$not x_4@1$]),
+    node((2, 0), [$x_3@1$]),
+    node((1, 1), [$kappa$]),
+    arr((0, 0), (1, 1), [$c$]),
+    arr((1, 0), (1, 1), [$c$]),
+    arr((2, 0), (1, 1), [$c$]),
+  )
+]
+
+== Example 3
+
+To arrive at a conflict organically, we need a set of clauses that can be refuted such as $c_1: x or y$, $c_2: x or z$, $c_3: not y or not z$. We start by assigning $x |-> 0$ and are forced from there:
+
+#grid(
+  columns: (auto,)*4,
+  rows: auto,
+  gutter: 3pt,
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((1, 0), [$not x@1$]),
+
+      // node((0, 1), [$y@1$]),
+      // arr((1, 0), (0, 1), [$c_1$]),
+
+      // node((2, 1), [$z@1$]),
+      // arr((1, 0), (2, 1), [$c_2$]),
+
+      // node((1, 2), [$kappa$]),
+      // arr((0, 1), (1, 2), [$c_3$]),
+      // arr((2, 1), (1, 2), [$c_3$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((1, 0), [$not x@1$]),
+
+      node((0, 1), [$y@1$]),
+      arr((1, 0), (0, 1), [$c_1$]),
+
+      // node((2, 1), [$z@1$]),
+      // arr((1, 0), (2, 1), [$c_2$]),
+
+      // node((1, 2), [$kappa$]),
+      // arr((0, 1), (1, 2), [$c_3$]),
+      // arr((2, 1), (1, 2), [$c_3$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((1, 0), [$not x@1$]),
+
+      node((0, 1), [$y@1$]),
+      arr((1, 0), (0, 1), [$c_1$]),
+
+      node((2, 1), [$z@1$]),
+      arr((1, 0), (2, 1), [$c_2$]),
+
+      // node((1, 2), [$kappa$]),
+      // arr((0, 1), (1, 2), [$c_3$]),
+      // arr((2, 1), (1, 2), [$c_3$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((1, 0), [$not x@1$]),
+
+      node((0, 1), [$y@1$]),
+      arr((1, 0), (0, 1), [$c_1$]),
+
+      node((2, 1), [$z@1$]),
+      arr((1, 0), (2, 1), [$c_2$]),
+
+      node((1, 2), [$kappa$]),
+      arr((0, 1), (1, 2), [$c_3$]),
+      arr((2, 1), (1, 2), [$c_3$]),
+    )
+  ],
+)
