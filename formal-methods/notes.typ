@@ -162,7 +162,7 @@ $
 
 = Implication Graphs
 
-//For a specific set of clauses, an implication
+Implication graphs capture aspects of the logical structure of a set of clauses that are useful for efficiently computing satisfiability of that set of clauses. We will first define some preliminaries, then implication graphs themselves, and then look at some examples.
 
 == Clause states
 
@@ -190,12 +190,16 @@ The clause that, under some $sigma$, forces a decision of $ell$ is called its _a
 An implication graph (IG) is a DAG $G = (V, E)$ that satisfies:
 
 - Each vertex has a label of the form $ell@d$, where $ell$ is some literal and $d$ is a decision level.
-- For each vertex $v_j$, take the set of dual literals of its antecedent: ${v_i | v_i^d in "Antecedent"(v_j)}$. For all $v_i$ that are vertices of the graph (by the above point, it is not necessary that all are), there is an edge from $v_i$ to $v_j$, or: $E = {(v_i, v_j) | v_i, v_j in V, v_i^d in "Antecedent"(v_j)}$. All these edges are labelled with $"Antecedent"(v_j)$.
+- For each vertex $v_j$, take the set of dual literals of its antecedent: ${v_i | v_i^d in "Antecedent"(v_j)}$. For all $v_i$ that are vertices of the graph, there is an edge from $v_i$ to $v_j$, or: $E = {(v_i, v_j) | v_i, v_j in V, v_i^d in "Antecedent"(v_j)}$. All these edges are labelled with $"Antecedent"(v_j)$.
+  - The way IGs are constructed, all but one $v_i$ _will_ label a vertex in the graph, or equally: the clause $"Antecedent"(v_j)$ is unit and the edges completely decribe why $v_j$ was forced; unforced literals don't have incoming edges. The only $v_i$ that thus didn't label a vertex is $v_j^d$. If that existed, this leads to the other option:
 
-Additionally, conflict graphs are also implication graphs, and they contain additionally
+Conflict graphs are also implication graphs, and they contain additionally
 
 - one vertex labelled $kappa$ called the conflict node, and
-- edges ${(v, kappa) | v^d in c}$ for some clause $c$. Note that there's no "filter" $v in V$ in this definition, so all of $c$'s literals' duals need to actually be vertices, which makes the clause actually unsatisfied and $kappa$'s predecessor nodes conflicting.
+- edges ${(v, kappa) | v^d in c}$ for some clause $c$.
+  - Note that there's no "filter" $v in V$ in this definition, so all of $c$'s literals' duals need to actually be vertices, which makes the clause actually unsatisfied and $kappa$'s predecessor nodes conflicting.
+
+Implication graphs are created incrementally by deciding one variable, resolving any unit clauses resulting from that assignment (by boolean constraint propagation or BCP), and repeating that until either all variables are assigned or a conflict is found.
 
 == Example 1
 
