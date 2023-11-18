@@ -23,7 +23,12 @@
 
   https://github.com/SillyFreak/tu-wien-software-engineering-notes
 
-  This document leaves out several details and was written primarily for me, but I hope it is useful for other people as well.
+  This document leaves out several details and was written primarily for me, but I hope it is useful for other people as well. Among the things one reading it should keep in mind:
+
+  - This is not a replacement to the course slides or the lectures/recordings in any way. Much of the information may require context and/or preliminaries found in the slides or in the lecture.
+  - In general, I skip formal definitions where they were basic enough for me; for example, I do not repeat syntax and semantic definitions for SIMPLE, FOL, etc.
+  - The document is in general still incomplete.
+  - I am fallible and make errors or overlook some points' importance.
 
   If you have questions, feel free to reach out on Github. I may at least occasionally be motivated enough to answer questions, extend the document with explanations based on your question, or help you with adding it yourself.
 
