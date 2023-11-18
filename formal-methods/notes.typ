@@ -211,9 +211,9 @@ Let's take the single clause $c: not x_1 or x_4 or not x_3$ again and start from
 - All variables have been assigned without conflict; we're done.
 
 #grid(
-  columns: (1fr,)*3,
+  columns: (auto,)*3,
   rows: auto,
-  gutter: 3pt,
+  gutter: 1fr,
   [
     #set align(center)
     #commutative-diagram(
@@ -274,7 +274,7 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
 #grid(
   columns: (auto,)*4,
   rows: auto,
-  gutter: 3pt,
+  gutter: 1fr,
   [
     #set align(center)
     #commutative-diagram(
@@ -344,3 +344,53 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
     )
   ],
 )
+
+_Sneak peek into CDCL:_ our decision of $not x@1$ led to a conflict here (in general, there could be multiple unforced decisions, but here it's just one), so we know that that is a decision we _must not_ make. We thus need to backtrack to before that decision (in this case: before _any_ decision) and prevent ourselves from making that mistake again.
+
+The way this is done is by adding a clause that captures the wrong decision, i.e. $c_4: x$. Because here, we only had one unforced decision, this is already a unit clause, and we're forced to decide $x@0$ (i.e. before the first regular decision).
+
+After that, no clause is unit ($c_1$, $c_2$, $c_4$ are satisfied, $c_3$ is unresolved) so we can make a decision such as $y@1$, which forces a decision on $z$:
+
+#grid(
+  columns: (auto,)*3,
+  rows: auto,
+  gutter: 1fr,
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((0, 0), [$x@0$]),
+
+      // node((1, 0), [$y@1$]),
+
+      // node((1, 1), [$not z@1$]),
+      // arr((1, 0), (1, 1), [$c_3$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((0, 0), [$x@0$]),
+
+      node((1, 0), [$y@1$]),
+
+      // node((1, 1), [$not z@1$]),
+      // arr((1, 0), (1, 1), [$c_3$]),
+    )
+  ],
+  [
+    #set align(center)
+    #commutative-diagram(
+    node-padding: (40pt, 20pt),
+      node((0, 0), [$x@0$]),
+
+      node((1, 0), [$y@1$]),
+
+      node((1, 1), [$not z@1$]),
+      arr((1, 0), (1, 1), [$c_3$]),
+    )
+  ],
+)
+
+The core of conflict-driven clause learning (CDCL) is then to define algorithms for finding conflict clauses and backtracking strategies.
