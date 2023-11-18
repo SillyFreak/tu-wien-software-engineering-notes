@@ -43,13 +43,7 @@
   set page(
     paper: "a4",
     margin: (x: 2.8cm, y: 2cm),
-    footer: [
-      #set align(center)
-      #counter(page).display(
-        "1/1",
-        both: true,
-      )
-    ]
+    numbering: "1/1",
   )
 
   set heading(numbering: "1.")
