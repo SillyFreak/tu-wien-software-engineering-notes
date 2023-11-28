@@ -157,7 +157,73 @@ $
 &ell_i <-> (x -> y)  &&equiv (ell_i -> (x -> y))  &&and (ell_i <- (x -> y))  &&equiv (not ell_i or not x or y) and (ell_i or x) and (ell_i or not y) \
 $
 
-The equivalence of these formulas can be easily verified using a truth table; I find splitting equivalences into two implications useful as an intermediate step to more easily see the CNF clauses. We can now finally translate our formula into a _definitional form_ that is in CNF:
+Another approach to getting these clauses' CNFs is directly via the truth table. Recall: from the true (false) entries in a truth table, one can read the DNF (CNF) of the function represented by the truth table:
+
+#[
+  #let h-rest(total, ..minus) = style(styles => {
+    let total = measure(total, styles).width
+    let minus = minus.pos().map(m => measure(m, styles).width)
+    h(total - minus.sum())
+  })
+
+  #let xx = $#h-rest($not x$, $x$) x$
+  #let nx = $not x$
+
+  #let yy = $#h-rest($and not y$, $and$, $y$) y$
+  #let ny = $not y$
+
+  #set align(center)
+
+  #table(
+    columns: 5,
+    align: (x, y) => if y == 0 {
+      center
+    } else {
+      ((center,)*3 + (right,)*2).at(x)
+    },
+    $x$, $y$, $x xor y$, [DNF], [CNF],
+    $0$, $0$, $0$, $$, $xx or yy$,
+    $0$, $1$, $1$, $nx and yy$, $$,
+    $1$, $0$, $1$, $xx and ny$, $$,
+    $1$, $1$, $0$, $$, $nx or ny$,
+  )
+]
+
+Each CNF clause is formed from one row where the formula is not satisfied. The first line can be read like this: "if $x |-> 0, y |-> 0$, the formula is not fulfilled, so at least one of the varibales must be opposite from that assignment." Then, if all clauses (that each negate one of the conditions under which the formula is false) are satisfied, the assignment belongs to one of the other rows, i.e. the ones that _do_ satisfy the formula.
+
+Thus, we can enumerate for each subformula in our translation the false assignments and read the CNF from that; for example ("`x`" stands for "don't care"):
+
+#[
+  #let h-rest(total, ..minus) = style(styles => {
+    let total = measure(total, styles).width
+    let minus = minus.pos().map(m => measure(m, styles).width)
+    h(total - minus.sum())
+  })
+
+  #let assign3(a, b, c) = {
+    let sp = h(1em)
+    [#a#h-rest($x and y$, $x$, $y$)#b#h-rest($y <-> ell$, $y$, $ell$)#c]
+  }
+
+  #let dc = [`x`]
+
+  #set align(center)
+
+  #table(
+    columns: 2,
+    align: (x, y) => if y == 0 {
+      center
+    } else {
+      (center, left).at(x)
+    },
+    $x and y <-> ell$, [CNF],
+    assign3($0$, dc, $1$), $x or not ell$,
+    assign3(dc, $0$, $1$), $y or not ell$,
+    assign3($1$, $1$, $0$), $not x or not y or ell$,
+  )
+]
+
+We can now finally translate our formula into a _definitional form_ that is in CNF:
 
 $
 (not ell_1 or p) and (ell_1 or not p) and dots and (not ell_9 or not ell_7 or ell_8) and (ell_9 or ell_7) and (ell_9 or not ell_8) and ell_9
