@@ -353,7 +353,7 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((1, 0), [$not x@1$]),
 
       // node((0, 1), [$y@1$]),
@@ -370,7 +370,7 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((1, 0), [$not x@1$]),
 
       node((0, 1), [$y@1$]),
@@ -387,7 +387,7 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((1, 0), [$not x@1$]),
 
       node((0, 1), [$y@1$]),
@@ -404,7 +404,7 @@ To arrive at a conflict organically, we need a set of clauses that can be refute
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((1, 0), [$not x@1$]),
 
       node((0, 1), [$y@1$]),
@@ -433,7 +433,7 @@ After that, no clause is unit ($c_1$, $c_2$, $c_4$ are satisfied, $c_3$ is unres
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((0, 0), [$x@0$]),
 
       // node((1, 0), [$y@1$]),
@@ -445,7 +445,7 @@ After that, no clause is unit ($c_1$, $c_2$, $c_4$ are satisfied, $c_3$ is unres
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((0, 0), [$x@0$]),
 
       node((1, 0), [$y@1$]),
@@ -457,7 +457,7 @@ After that, no clause is unit ($c_1$, $c_2$, $c_4$ are satisfied, $c_3$ is unres
   [
     #set align(center)
     #commutative-diagram(
-    node-padding: (40pt, 20pt),
+      node-padding: (40pt, 20pt),
       node((0, 0), [$x@0$]),
 
       node((1, 0), [$y@1$]),
