@@ -160,16 +160,10 @@ $
 Another approach to getting these clauses' CNFs is directly via the truth table. Recall: from the true (false) entries in a truth table, one can read the DNF (CNF) of the function represented by the truth table:
 
 #[
-  #let h-rest(total, ..minus) = style(styles => {
-    let total = measure(total, styles).width
-    let minus = minus.pos().map(m => measure(m, styles).width)
-    h(total - minus.sum())
-  })
-
-  #let xx = $#h-rest($not x$, $x$) x$
+  #let xx = $#hide($not$) x$
   #let nx = $not x$
 
-  #let yy = $#h-rest($and not y$, $and$, $y$) y$
+  #let yy = $#hide($not$) y$
   #let ny = $not y$
 
   #set align(center)
@@ -194,18 +188,9 @@ Each CNF clause is formed from one row where the formula is not satisfied. The f
 Thus, we can enumerate for each subformula in our translation the false assignments and read the CNF from that; for example ("`x`" stands for "don't care"):
 
 #[
-  #let h-rest(total, ..minus) = style(styles => {
-    let total = measure(total, styles).width
-    let minus = minus.pos().map(m => measure(m, styles).width)
-    h(total - minus.sum())
-  })
-
   #let assign3(a, b, c) = {
-    let sp = h(1em)
-    [#a#h-rest($x and y$, $x$, $y$)#b#h-rest($y <-> ell$, $y$, $ell$)#c]
+    [#a #hide($and$) #b #hide($<->$) #c]
   }
-
-  #let dc = [`x`]
 
   #set align(center)
 
@@ -217,8 +202,8 @@ Thus, we can enumerate for each subformula in our translation the false assignme
       (center, left).at(x)
     },
     $x and y <-> ell$, [CNF],
-    assign3($0$, dc, $1$), $x or not ell$,
-    assign3(dc, $0$, $1$), $y or not ell$,
+    assign3($0$, `x`, $1$), $x or not ell$,
+    assign3(`x`, $0$, $1$), $y or not ell$,
     assign3($1$, $1$, $0$), $not x or not y or ell$,
   )
 ]
